@@ -2,6 +2,7 @@ import sqlite from 'sqlite3';
 import { open } from 'sqlite';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
 
 export async function init_Db() {
   const dbPath = './database.sqlite';
@@ -30,6 +31,7 @@ export async function init_Db() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       display_name TEXT DEFAULT NULL,
+      password TEXT NOT NULL DEFAULT "",
       api_key TEXT NOT NULL UNIQUE
     )
   `);
@@ -60,10 +62,12 @@ export async function init_Db() {
 
   if (users.length === 0) {
     const apiKey = uuidv4();
+    const passwordHash = await bcrypt.hash('admin', 10); // Hash the password
 
     await db.run(
-      'INSERT INTO users (name, api_key) VALUES (?, ?)',
+      'INSERT INTO users (name, password, api_key) VALUES (?, ?, ?)', // Add password field to the INSERT statement
       'admin',
+      passwordHash, // Store the hashed password in the password field
       apiKey
     );
 
@@ -78,6 +82,16 @@ export async function init_Db() {
       adminUser.name,
       adminUser.id
     );
+  }
+
+  // Hash the passwords for any users that don't have a hash yet
+  const usersWithMissingHash = await db.all(
+    'SELECT id, password FROM users WHERE password NOT LIKE "$2b$%"'
+  ) as { id: number; password: string }[];
+
+  for (const user of usersWithMissingHash) {
+    const passwordHash = await bcrypt.hash(user.password, 10);
+    await db.run('UPDATE users SET password=? WHERE id=?', passwordHash, user.id);
   }
 
   return db;
