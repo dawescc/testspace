@@ -1,5 +1,5 @@
 {
-    "name": "yurrbo",
+    "name": "t",
     "author": "Ryan Dawes",
     "private": true,
     "dependencies": {
@@ -10,20 +10,23 @@
         "@types/node": "18.15.11",
         "@types/react": "18.0.35",
         "@types/react-dom": "18.0.11",
+        "@types/uuid": "^9.0.1",
         "eslint": "8.38.0",
         "eslint-config-next": "13.3.0",
         "next": "13.3.0",
         "react": "18.2.0",
         "react-dom": "18.2.0",
-        "typescript": "5.0.4"
+        "sqlite3": "^5.1.6",
+        "typescript": "5.0.4",
+        "uuid": "^9.0.0"
     },
     "devDependencies": {
         "autoprefixer": "^10.4.14",
-        "postcss": "^8.4.22",
-        "tailwindcss": "^3.3.1",
         "npm-run-all": "latest",
+        "postcss": "^8.4.22",
         "prettier": "latest",
-        "prettier-plugin-tailwindcss": "latest"
+        "prettier-plugin-tailwindcss": "latest",
+        "tailwindcss": "^3.3.1"
     },
     "scripts": {
         "dev": "next dev",
