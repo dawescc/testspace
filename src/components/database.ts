@@ -36,6 +36,15 @@ export async function init_Db() {
     )
   `);
 
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS sessions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      sessionId TEXT NOT NULL UNIQUE,
+      userId INTEGER NOT NULL,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
   db.on('insert', async (table: string, row: any) => {
     if (table === 'users') {
       console.log('Updating display name...');
